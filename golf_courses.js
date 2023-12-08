@@ -3,12 +3,17 @@ window.addEventListener("load", () => {
 
 // Add buttons to select radius 
 // Add function/method to get current loc
-const lat= 39.85919;
-const lon=-83.03379;
-const rad = 50000;
+let lat;
+let lon;
 
 
-
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position){
+       lat=position.coords.latitude;
+       lon=position.coords.longitude;
+    });
+  }
+    
 
     const golfCourseList = document.querySelector("#golfCourseList");
     console.log(golfCourseList);
@@ -16,9 +21,28 @@ const rad = 50000;
     const loadButton = document.querySelector("#loadButton");
     console.log(loadButton);
     // On button click load courses
+    
     loadButton?.addEventListener("click", () => {
+      console.log(navigator.geolocation) ;
+      golfCourseList.innerHTML="";
+
+      const drop = document.querySelector("#radiusDrop");
+      const rad= drop.value;
+
+      //checks if current location was found if not it sends a default location to get results from
+      if(lat,lon == null){
+       golfCourseList.innerHTML="Current Location not found, please try again (default Location: Grove City, Ohio)";
+      lat= 39.85919;
+      lon=-83.03379;
+      }
+
       iMap();
-      search();
+
+      var rtitle = document.createElement("h1");
+      rtitle.innerHTML="Your Course Results!";
+      golfCourseList.appendChild(rtitle);
+
+      search(rad);
     });
 
     // Function to display details of all results 
@@ -27,15 +51,23 @@ const rad = 50000;
         console.log(results);
         results.forEach((el) => {
             const newChild = document.createElement("div");
+            const addy = document.createElement("p");
+            const rating = document.createElement("p");
             newChild.innerText = el['name'];
+            addy.innerText = el['vicinity'];
+            rating.innerText="Rating:"+el['rating'];
+            
+
            
             // add selector of what type of golf (Disc,Normal)
 
-         /*   if(!el['name'].includes("Disc")){
+            if(!el['name'].includes("Disc")){
             golfCourseList.appendChild(newChild);
-            } */
+            golfCourseList.appendChild(addy);
+            golfCourseList.appendChild(rating);
+            } 
             
-            golfCourseList.appendChild(newChild);
+            
 
             
         });
@@ -50,7 +82,7 @@ const rad = 50000;
       }
     }
     // Fills out request parameters and then sends the request
-    function search(){
+    function search(rad){
     var request ={
       location: new google.maps.LatLng(lat,lon),
       radius:rad,
