@@ -1,10 +1,11 @@
-
 window.addEventListener("load", () => {
 
 // Add buttons to select radius 
 // Add function/method to get current loc
 let lat;
 let lon;
+let pic = "backgroundDef.jpg";
+
 
 
 if (navigator.geolocation) {
@@ -51,9 +52,19 @@ if (navigator.geolocation) {
         console.log(results);
         results.forEach((el) => {
             const newChild = document.createElement("div");
+            const name = document.createElement("p");
             const addy = document.createElement("p");
             const rating = document.createElement("p");
-            newChild.innerText = el['name'];
+            
+            try{
+            pic = el['photos'][0].getUrl();
+            console.log(pic);
+            }catch(error){
+                pic="defBackground";
+            }
+
+            newChild.setAttribute('style',`background-image: url(${pic})`);
+            name.innerText=el['name'];
             addy.innerText = el['vicinity'];
             rating.innerText="Rating:"+el['rating'];
             
@@ -63,6 +74,7 @@ if (navigator.geolocation) {
 
             if(!el['name'].includes("Disc")){
             golfCourseList.appendChild(newChild);
+            golfCourseList.appendChild(name);
             golfCourseList.appendChild(addy);
             golfCourseList.appendChild(rating);
             } 
