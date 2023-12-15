@@ -5,7 +5,7 @@ window.addEventListener("load", () => {
   
   
   
-  
+  //gets user location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position){
          lat=position.coords.latitude;
